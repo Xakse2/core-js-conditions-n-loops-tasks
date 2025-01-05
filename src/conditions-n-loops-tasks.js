@@ -402,8 +402,24 @@ function getSpiralMatrix(size) {
  *    [7, 8, 9]         [9, 6, 3]
  *  ]                 ]
  */
-function rotateMatrix(/* matrix */) {
-  throw new Error('Not implemented');
+function rotateMatrix(matrix) {
+  const matrix1 = matrix;
+  const size = matrix1.length;
+  for (let i = 0; i < size; i += 1) {
+    for (let j = i + 1; j < size; j += 1) {
+      const temp = matrix1[i][j];
+      matrix1[i][j] = matrix1[j][i];
+      matrix1[j][i] = temp;
+    }
+  }
+  for (let i = 0; i < size; i += 1) {
+    for (let j = 0; j < Math.floor(size / 2); j += 1) {
+      const temp = matrix1[i][j];
+      matrix1[i][j] = matrix1[i][size - 1 - j];
+      matrix1[i][size - 1 - j] = temp;
+    }
+  }
+  return matrix1;
 }
 
 /**
@@ -420,8 +436,29 @@ function rotateMatrix(/* matrix */) {
  *  [2, 9, 5, 9]    => [2, 5, 9, 9]
  *  [-2, 9, 5, -3]  => [-3, -2, 5, 9]
  */
-function sortByAsc(/* arr */) {
-  throw new Error('Not implemented');
+function sortByAsc(arr) {
+  function partition(array, low, high) {
+    const array1 = array;
+    const pivot = array1[high];
+    let i = low - 1;
+    for (let j = low; j < high; j += 1) {
+      if (array1[j] < pivot) {
+        i += 1;
+        [array1[i], array1[j]] = [array1[j], array1[i]];
+      }
+    }
+    [array1[i + 1], array1[high]] = [array1[high], array1[i + 1]];
+    return i + 1;
+  }
+  function quickSortInPlace(array, low, high) {
+    if (low < high) {
+      const pivotIndex = partition(array, low, high);
+      quickSortInPlace(array, low, pivotIndex - 1);
+      quickSortInPlace(array, pivotIndex + 1, high);
+    }
+  }
+  quickSortInPlace(arr, 0, arr.length - 1);
+  return arr;
 }
 
 /**
@@ -441,8 +478,32 @@ function sortByAsc(/* arr */) {
  *  '012345', 3 => '024135' => '043215' => '031425'
  *  'qwerty', 3 => 'qetwry' => 'qtrewy' => 'qrwtey'
  */
-function shuffleChar(/* str, iterations */) {
-  throw new Error('Not implemented');
+function shuffleChar(str, iterations) {
+  let temp1 = '';
+  let temp2 = '';
+  let result = str;
+  let cycleLength = 0;
+  do {
+    temp1 = '';
+    temp2 = '';
+    for (let i = 0; i < result.length; i += 2) temp1 += result[i];
+    for (let i = 1; i < result.length; i += 2) temp2 += result[i];
+    result = temp1 + temp2;
+    cycleLength += 1;
+  } while (result !== str);
+  const cycle = iterations % cycleLength;
+  for (let i = 0; i < cycle; i += 1) {
+    temp1 = '';
+    temp2 = '';
+    for (let j = 0; j < result.length; j += 2) {
+      temp1 += result[j];
+    }
+    for (let l = 1; l < result.length; l += 2) {
+      temp2 += result[l];
+    }
+    result = temp1 + temp2;
+  }
+  return result;
 }
 
 /**
