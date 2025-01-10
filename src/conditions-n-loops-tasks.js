@@ -532,33 +532,61 @@ function getNearestBigger(number) {
     temp = Math.floor(temp / 10);
   }
 
-  let i = digits.length - 2;
+  const { length } = digits;
+  let pivot = -1;
 
-  while (i >= 0 && digits[i] >= digits[i + 1]) {
-    i -= 1;
+  for (let i = length - 2; i >= 0; i -= 1) {
+    if (digits[i] < digits[i + 1]) {
+      pivot = i;
+      break;
+    }
   }
 
-  if (i === -1) {
+  if (pivot === -1) {
     return number;
   }
 
-  let j = digits.length - 1;
-  while (digits[j] <= digits[i]) {
-    j -= 1;
-  }
-  [digits[i], digits[j]] = [digits[j], digits[i]];
+  let smallestLarger = -1;
 
-  const right = digits.splice(i + 1);
-  right.sort((a, b) => a - b);
-
-  let result = 0;
-  const numberArray = digits.concat(right);
-
-  for (let y = 0; i < numberArray.length; y += 1) {
-    result = result * 10 + numberArray[y];
+  for (let i = pivot + 1; i < length; i += 1) {
+    if (
+      digits[i] > digits[pivot] &&
+      (smallestLarger === -1 || digits[i] < digits[smallestLarger])
+    ) {
+      smallestLarger = i;
+    }
   }
 
-  return result;
+  const tempDigit = digits[pivot];
+  digits[pivot] = digits[smallestLarger];
+  digits[smallestLarger] = tempDigit;
+
+  let nextNumber = 0;
+  const rest = [];
+
+  for (let i = pivot + 1; i < length; i += 1) {
+    rest.push(digits[i]);
+  }
+
+  for (let i = 0; i < rest.length - 1; i += 1) {
+    for (let j = i + 1; j < rest.length; j += 1) {
+      if (rest[i] > rest[j]) {
+        temp = rest[i];
+        rest[i] = rest[j];
+        rest[j] = temp;
+      }
+    }
+  }
+
+  for (let i = 0; i <= pivot; i += 1) {
+    nextNumber = nextNumber * 10 + digits[i];
+  }
+
+  for (let i = 0; i < rest.length; i += 1) {
+    nextNumber = nextNumber * 10 + rest[i];
+  }
+
+  return nextNumber;
 }
 
 module.exports = {
